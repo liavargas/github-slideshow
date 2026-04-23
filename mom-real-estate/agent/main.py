@@ -13,16 +13,16 @@ def run() -> None:
     google_api_key = os.environ.get("GOOGLE_API_KEY")
     search_engine_id = os.environ.get("GOOGLE_SEARCH_ENGINE_ID")
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY")
-    sendgrid_key = os.environ.get("SENDGRID_API_KEY")
-    recipient = os.environ.get("RECIPIENT_EMAIL", "liabrielle@gmail.com")
+    gmail_app_password = os.environ.get("GMAIL_APP_PASSWORD")
     sender = os.environ.get("SENDER_EMAIL")
+    recipient = os.environ.get("RECIPIENT_EMAIL", "liabrielle@gmail.com")
 
     missing = [
         name for name, val in [
             ("GOOGLE_API_KEY", google_api_key),
             ("GOOGLE_SEARCH_ENGINE_ID", search_engine_id),
             ("ANTHROPIC_API_KEY", anthropic_key),
-            ("SENDGRID_API_KEY", sendgrid_key),
+            ("GMAIL_APP_PASSWORD", gmail_app_password),
             ("SENDER_EMAIL", sender),
         ] if not val
     ]
@@ -39,5 +39,5 @@ def run() -> None:
     print(f"Identified {len(listings)} matching listings")
 
     print(f"Sending report to {recipient}...")
-    send_report(sendgrid_key, recipient, sender, listings)
+    send_report(gmail_app_password, recipient, sender, listings)
     print("Done.")
