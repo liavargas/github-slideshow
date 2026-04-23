@@ -22,16 +22,16 @@ REAL_ESTATE_SITES = [
     "sothebysrealty.com",
 ]
 
-BRAVE_URL = "https://api.search.brave.com/res/v1/web/search"
+GOOGLE_SEARCH_URL = "https://www.googleapis.com/customsearch/v1"
 
 
-def search_listings(api_key: str) -> List[Dict]:
+def search_listings(api_key: str, search_engine_id: str) -> List[Dict]:
     all_results = []
     seen_urls = set()
 
     for town in TOWNS:
         query = f'3 4 bedroom house for sale {town} NJ 750000 900000'
-        results = _brave_search(api_key, query, town)
+        results = _google_search(api_key, search_engine_id, query, town)
         for r in results:
             if r["url"] not in seen_urls:
                 seen_urls.add(r["url"])
@@ -40,27 +40,28 @@ def search_listings(api_key: str) -> List[Dict]:
     return all_results
 
 
-def _brave_search(api_key: str, query: str, town: str) -> List[Dict]:
-    headers = {
-        "X-Subscription-Token": api_key,
-        "Accept": "application/json",
+def _google_search(api_key: str, search_engine_id: str, query: str, town: str) -> List[Dict]:
+    params = {
+        "key": api_key,
+        "cx": search_engine_id,
+        "q": query,
+        "num": 10,
     }
-    params = {"q": query, "count": 10}
 
     try:
-        response = requests.get(BRAVE_URL, headers=headers, params=params, timeout=30)
+        response = requests.get(GOOGLE_SEARCH_URL, params=params, timeout=30)
         response.raise_for_status()
         data = response.json()
 
         results = []
-        for item in data.get("web", {}).get("results", []):
-            url = item.get("url", "")
+        for item in data.get("items", []):
+            url = item.get("link", "")
             if any(site in url for site in REAL_ESTATE_SITES):
                 results.append({
                     "town": town,
                     "title": item.get("title", ""),
                     "url": url,
-                    "snippet": item.get("description", ""),
+                    "snippet": item.get("snippet", ""),
                 })
 
         return results

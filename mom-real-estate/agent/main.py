@@ -10,7 +10,8 @@ from .email_report import send_report
 def run() -> None:
     load_dotenv()
 
-    serper_key = os.environ.get("BRAVE_API_KEY")
+    google_api_key = os.environ.get("GOOGLE_API_KEY")
+    search_engine_id = os.environ.get("GOOGLE_SEARCH_ENGINE_ID")
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY")
     sendgrid_key = os.environ.get("SENDGRID_API_KEY")
     recipient = os.environ.get("RECIPIENT_EMAIL", "liabrielle@gmail.com")
@@ -18,7 +19,8 @@ def run() -> None:
 
     missing = [
         name for name, val in [
-            ("BRAVE_API_KEY", serper_key),
+            ("GOOGLE_API_KEY", google_api_key),
+            ("GOOGLE_SEARCH_ENGINE_ID", search_engine_id),
             ("ANTHROPIC_API_KEY", anthropic_key),
             ("SENDGRID_API_KEY", sendgrid_key),
             ("SENDER_EMAIL", sender),
@@ -29,7 +31,7 @@ def run() -> None:
         sys.exit(1)
 
     print("Searching for listings across 7 towns...")
-    raw = search_listings(serper_key)
+    raw = search_listings(google_api_key, search_engine_id)
     print(f"Found {len(raw)} raw results (deduplicated)")
 
     print("Analyzing with Claude...")
