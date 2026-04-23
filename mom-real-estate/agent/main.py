@@ -10,7 +10,7 @@ from .email_report import send_report
 def run() -> None:
     load_dotenv()
 
-    serper_key = os.environ.get("SERPER_API_KEY")
+    serper_key = os.environ.get("BRAVE_API_KEY")
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY")
     sendgrid_key = os.environ.get("SENDGRID_API_KEY")
     recipient = os.environ.get("RECIPIENT_EMAIL", "liabrielle@gmail.com")
@@ -18,7 +18,7 @@ def run() -> None:
 
     missing = [
         name for name, val in [
-            ("SERPER_API_KEY", serper_key),
+            ("BRAVE_API_KEY", serper_key),
             ("ANTHROPIC_API_KEY", anthropic_key),
             ("SENDGRID_API_KEY", sendgrid_key),
             ("SENDER_EMAIL", sender),
